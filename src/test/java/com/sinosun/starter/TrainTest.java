@@ -31,26 +31,38 @@ public class TrainTest {
     private static String toStation = "XYY"; //到达站代号
     private static String purposeCodes ="ADULT"; //乘客类型（成人:ADULT，学生:0X00）
 
+    private static String trainNo = "630000K2260L"; //列车号
+    private static String startTrainDate = "2019-01-08"; //列车起始站发成日期?
+
+    private static String startStationNo = "24"; //出发站序
+    private static String endStationNo = "25"; //出发站序
+    private static String seat_types = "1413"; //车票列表倒数第三个参数
+
+
+
     private static String cLeftTicketUrl ="leftTicket/queryA";
-
-
-
 
     //注:12306的查询接口经常改变（可能一天一改），其变动的主要规律为：https://kyfw.12306.cn/otn/leftTicket/query[A-Z]，就是最后一个字母做变动。
     // 因此，如果程序查询出异常，很大可能就是接口改变了，重新抓下查询接口即可。
-    private static final String GET_TICKET_LIST_URL = "https://kyfw.12306.cn/otn/%s?" +
+    private static String GET_TICKET_LIST_URL = "https://kyfw.12306.cn/otn/%s?" +
             "leftTicketDTO.train_date=%s&" +
             "leftTicketDTO.from_station=%s&" +
             "leftTicketDTO.to_station=%s&" +
             "purpose_codes=%s";
 
 
-    private static final String GET_TICKET_PRICE_URL = "https://kyfw.12306.cn/otn/leftTicket/queryTicketPrice?" +
-            "train_no=410000K32202&" +
-            "from_station_no=01&" +
-            "to_station_no=07&" +
-            "seat_types=1413&" +
-            "train_date=2018-12-25";
+    private static String GET_TICKET_PRICE_URL = "https://kyfw.12306.cn/otn/leftTicket/queryTicketPrice?" +
+            "train_no=%s&" +
+            "from_station_no=%s&" +
+            "to_station_no=%s&" +
+            "seat_types=%s&" +
+            "train_date=%s";
+
+    private static String GET_TICKET_LINE_URL = "https://kyfw.12306.cn/otn/czxx/queryByTrainNo?" +
+            "train_no=%s&" +
+            "from_station_telecode=%s&" +
+            "to_station_telecode=%s&" +
+            "depart_date=%s";
 
     @Test
     public void getTrainList()
@@ -121,7 +133,7 @@ public class TrainTest {
             String swz_num = StringUtils.isNotEmpty(trainItem.get(32)) ? trainItem.get(32) : "--"; // 商务特等座
             String srrb_num = StringUtils.isNotEmpty(trainItem.get(33)) ? trainItem.get(33) : "--"; //?
 
-            String yp_ex = trainItem.get(34); //?
+            String yp_ex = trainItem.get(34); //? 查询车票价格时的seat_types字段
             String seat_types = trainItem.get(35); //?
             String exchange_train_flag = trainItem.get(36); //?
 
@@ -154,4 +166,65 @@ public class TrainTest {
     }
 
 
+    @Test
+    public void queryByTrainNo() {
+        // 改用jsoup请求
+        String getTicketListUrl = String.format(GET_TICKET_LINE_URL, trainNo, fromStation, toStation, startTrainDate);
+        JSONObject ret = restTemplate.getForObject(getTicketListUrl, JSONObject.class);
+        System.out.println(JSON.toJSONString(ret, true));
+
+        JSONObject result = new JSONObject();
+
+        JSONArray stops = ret.getJSONObject("data").getJSONArray("data");
+        JSONObject stopInfoFirst = stops.getJSONObject(0);
+        String startStationName = stopInfoFirst.getString("start_station_name"); //出发城市
+        String endStationName = stopInfoFirst.getString("end_station_name"); //到达城市
+        String stationTrainCode = stopInfoFirst.getString("station_train_code"); //车次号
+        String trainClassName = stopInfoFirst.getString("train_class_name"); //车次类型
+        String serviceType = stopInfoFirst.getString("service_type"); //服务类型 0表示无空调 其他表示有空调
+        String serviceName = "0".equals(serviceType) ? "无空调" : "有空调";
+
+        result.put("StartStationName", startStationName);
+        result.put("EndStationName", endStationName);
+        result.put("StationTrainCode", stationTrainCode);
+        result.put("TrainClassName", trainClassName);
+        result.put("ServiceType", serviceType);
+        result.put("ServiceName", serviceName);
+
+        JSONArray resultStops = new JSONArray();
+        for (int i = 0; i < stops.size(); i++) {
+            JSONObject stopInfo = stops.getJSONObject(i);
+            String startTime = stopInfo.getString("start_time"); //出发时间（格式 HH:mm）
+            String arriveTime = stopInfo.getString("arrive_time"); //到达时间（格式 HH:mm）
+            String stationName = stopInfo.getString("station_name"); //站名
+            String stopoverTime = stopInfo.getString("stopover_time"); //停留时间（分钟）
+            String stationNo = stopInfo.getString("station_no"); //站序
+            Boolean isEnabled = stopInfo.getBoolean("isEnabled"); //是否有效
+
+            JSONObject resultStopInfo = new JSONObject();
+            resultStopInfo.put("StartTime", startTime);
+            resultStopInfo.put("ArriveTime", arriveTime);
+            resultStopInfo.put("StationName", stationName);
+            resultStopInfo.put("StopoverTime", stopoverTime);
+            resultStopInfo.put("StationNo", stationNo);
+            resultStopInfo.put("IsEnabled", isEnabled);
+            resultStops.add(resultStopInfo);
+        }
+        result.put("Stops", resultStops);
+
+        System.out.println(JSON.toJSONString(result, true));
+
+    }
+
+    @Test
+    public void queryTicketPrice() {
+        // 改用jsoup请求
+        String getTicketListUrl = String.format(GET_TICKET_PRICE_URL, trainNo, startStationNo, endStationNo, seat_types, fromDate);
+        JSONObject ret = restTemplate.getForObject(getTicketListUrl, JSONObject.class);
+        System.out.println(JSON.toJSONString(ret, true));
+
+        JSONObject data = ret.getJSONObject("data");
+
+
+    }
 }
