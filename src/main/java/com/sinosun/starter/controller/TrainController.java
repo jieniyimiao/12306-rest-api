@@ -29,8 +29,7 @@ public class TrainController {
 
     @RequestMapping(value = "getAllCity", method = RequestMethod.POST)
     @ResponseBody
-    public StationResult getAllCityHandler(HttpServletRequest request, @RequestBody NoneRequest requestBody)
-    {
+    public StationResult getAllCityHandler(HttpServletRequest request, @RequestBody NoneRequest requestBody) {
         logger.info("getAllCity请求参数为：{}", requestBody);
         return trainService.getAllCity(requestBody);
     }

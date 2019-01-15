@@ -10,16 +10,16 @@ import com.google.common.base.MoreObjects;
  */
 public class BaseResult {
     @JSONField(name = "Code")
-    private int code;
+    private String code = "0";
 
     @JSONField(name = "Message")
     private String message;
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

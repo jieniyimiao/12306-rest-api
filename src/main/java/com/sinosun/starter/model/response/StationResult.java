@@ -12,6 +12,13 @@ public class StationResult extends BaseResult {
     @JSONField(name = "Result")
     private StationList result;
 
+    public StationResult() {
+    }
+
+    public StationResult(StationList result) {
+        this.result = result;
+    }
+
     public StationList getResult() {
         return result;
     }

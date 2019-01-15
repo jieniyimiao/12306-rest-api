@@ -14,6 +14,13 @@ public class StationList {
     @JSONField(name = "Stations")
     protected List<Station> stations;
 
+    public StationList() {
+    }
+
+    public StationList(List<Station> stations) {
+        this.stations = stations;
+    }
+
     public List<Station> getStations() {
         return stations;
     }
