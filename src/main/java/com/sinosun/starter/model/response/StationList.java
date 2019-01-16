@@ -1,6 +1,7 @@
 package com.sinosun.starter.model.response;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.annotation.JSONType;
 import com.google.common.base.MoreObjects;
 
 import java.util.List;
@@ -10,8 +11,8 @@ import java.util.List;
  *
  * @author caogu
  */
+@JSONType(naming = PropertyNamingStrategy.PascalCase)
 public class StationList {
-    @JSONField(name = "Stations")
     protected List<Station> stations;
 
     public StationList() {

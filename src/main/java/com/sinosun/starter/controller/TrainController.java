@@ -1,11 +1,14 @@
 package com.sinosun.starter.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sinosun.starter.model.request.NoneRequest;
+import com.sinosun.starter.model.request.SearchCityRequest;
 import com.sinosun.starter.model.response.StationResult;
 import com.sinosun.starter.service.TrainService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,19 +23,30 @@ import javax.servlet.http.HttpServletRequest;
  * @author caogu
  */
 @Controller
-@RequestMapping(value = "/train/")
+@RequestMapping(value = "/train/",
+        method = RequestMethod.POST,
+        produces = {MediaType.APPLICATION_JSON_VALUE},
+        consumes = {MediaType.APPLICATION_JSON_VALUE}
+)
 public class TrainController {
     private static final Logger logger = LoggerFactory.getLogger(TrainController.class);
 
     @Autowired
     private TrainService trainService;
 
-    @RequestMapping(value = "getAllCity", method = RequestMethod.POST)
+    @RequestMapping(value = "getAllCity")
     @ResponseBody
-    public StationResult getAllCityHandler(HttpServletRequest request, @RequestBody NoneRequest requestBody) {
-        logger.info("getAllCity请求参数为：{}", requestBody);
-        return trainService.getAllCity(requestBody);
+    public StationResult getAllCityHandler(HttpServletRequest request, @RequestBody JSONObject requestBody) {
+        return trainService.getAllCity(requestBody.toJavaObject(NoneRequest.class));
     }
+
+    @RequestMapping(value = "searchCity")
+    @ResponseBody
+    public StationResult searchCityHandler(HttpServletRequest request, @RequestBody JSONObject requestBody) {
+        return trainService.searchCity(requestBody.toJavaObject(SearchCityRequest.class));
+    }
+
+
 
 
 }

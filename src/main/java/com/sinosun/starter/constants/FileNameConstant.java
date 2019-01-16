@@ -7,7 +7,8 @@ package com.sinosun.starter.constants;
  */
 public class FileNameConstant {
     /**
-     * {@value} 火车站点全量数据json文件名
+     * {@value} 火车站点本地全量数据json文件名
      */
-    public static final String TRAIN_ALL_STATION_FILE_NAME = "TrainAllStation.json";
+    public static final String TRAIN_ALL_STATION_LOCAL_FILE_NAME = "TrainAllStation.json";
+
 }

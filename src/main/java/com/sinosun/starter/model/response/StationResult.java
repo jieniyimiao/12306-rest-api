@@ -1,6 +1,7 @@
 package com.sinosun.starter.model.response;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.annotation.JSONType;
 import com.google.common.base.MoreObjects;
 
 /**
@@ -8,8 +9,8 @@ import com.google.common.base.MoreObjects;
  *
  * @author caogu
  */
+@JSONType(naming = PropertyNamingStrategy.PascalCase)
 public class StationResult extends BaseResult {
-    @JSONField(name = "Result")
     private StationList result;
 
     public StationResult() {

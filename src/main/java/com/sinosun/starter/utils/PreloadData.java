@@ -29,7 +29,7 @@ public class PreloadData {
     @NotNull
     public static List<Station> getTrainAllCity() {
         if (TRAIN_ALL_STATION == null) {
-            String path = getFilePath("train" + File.separator + FileNameConstant.TRAIN_ALL_STATION_FILE_NAME);
+            String path = getFilePath("train" + File.separator + FileNameConstant.TRAIN_ALL_STATION_LOCAL_FILE_NAME);
             TRAIN_ALL_STATION = JsonUtil.readFileToJsonArray(path).toJavaList(Station.class);
         }
         return TRAIN_ALL_STATION;
