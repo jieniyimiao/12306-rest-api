@@ -35,6 +35,17 @@ public class TrainRestTest {
     }
 
     @Test
+    public void getHotCity() {
+        JSONObject request = new JSONObject();
+        StationResult ret = restTemplate.postForObject(DOMAIN + "train/getHotCity", request, StationResult.class);
+
+        Assert.assertEquals("0", ret.getCode());
+        Assert.assertTrue(!ret.getResult().getStations().isEmpty());
+
+        System.out.println(JSON.toJSONString(ret, true));
+    }
+
+    @Test
     public void searchCity() {
         JSONObject request = new JSONObject().fluentPut("Keyword", "西安");
         StationResult ret = restTemplate.postForObject(DOMAIN + "train/searchCity", request, StationResult.class);

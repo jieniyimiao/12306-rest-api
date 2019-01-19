@@ -40,6 +40,12 @@ public class TrainController {
         return trainService.getAllCity(requestBody.toJavaObject(NoneRequest.class));
     }
 
+    @RequestMapping(value = "getHotCity")
+    @ResponseBody
+    public StationResult getHotCityHandler(HttpServletRequest request, @RequestBody JSONObject requestBody) {
+        return trainService.getHotCity(requestBody.toJavaObject(NoneRequest.class));
+    }
+
     @RequestMapping(value = "searchCity")
     @ResponseBody
     public StationResult searchCityHandler(HttpServletRequest request, @RequestBody JSONObject requestBody) {

@@ -24,15 +24,26 @@ public class PreloadData {
     /**
      * 火车全量站点数据
      */
-    private static List<Station> TRAIN_ALL_STATION = getTrainAllCity();
+    private static List<Station> TRAIN_ALL_STATION = getTrainCityData(FileNameConstant.TRAIN_ALL_STATION_LOCAL_FILE_NAME);
+    /**
+     * 火车热点站点数据
+     */
+    private static List<Station> TRAIN_HOT_STATION = getTrainCityData(FileNameConstant.TRAIN_HOT_STATION_LOCAL_FILE_NAME);
 
     @NotNull
     public static List<Station> getTrainAllCity() {
-        if (TRAIN_ALL_STATION == null) {
-            String path = getFilePath("train" + File.separator + FileNameConstant.TRAIN_ALL_STATION_LOCAL_FILE_NAME);
-            TRAIN_ALL_STATION = JsonUtil.readFileToJsonArray(path).toJavaList(Station.class);
-        }
         return TRAIN_ALL_STATION;
+    }
+
+    @NotNull
+    public static List<Station> getTrainHotCity() {
+        return TRAIN_HOT_STATION;
+    }
+
+    @NotNull
+    private static List<Station> getTrainCityData(String fileName) {
+        String path = getFilePath("train" + File.separator + fileName);
+        return JsonUtil.readFileToJsonArray(path).toJavaList(Station.class);
     }
 
     @NotNull

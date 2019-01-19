@@ -29,6 +29,10 @@ public class TrainService {
         return new StationResult(new StationList(getAllStation()));
     }
 
+    public StationResult getHotCity(NoneRequest requestBody) {
+        return new StationResult(new StationList(PreloadData.getTrainHotCity()));
+    }
+
     public StationResult searchCity(SearchCityRequest requestBody) {
         requestBody.validate();
 

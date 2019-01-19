@@ -26,7 +26,7 @@ public class TrainTest {
     }
 
 
-    private static String fromDate = "2019-01-10"; //出发时间（格式：yyyy-mm-dd）
+    private static String fromDate = "2019-01-28"; //出发时间（格式：yyyy-mm-dd）
     private static String fromStation = "XAY"; //出发站代号
     private static String toStation = "XYY"; //到达站代号
     private static String purposeCodes ="ADULT"; //乘客类型（成人:ADULT，学生:0X00）
