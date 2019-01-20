@@ -22,8 +22,8 @@ import java.util.Locale;
  * @author caogu
  */
 @Service
-public class TrainService {
-    private static final Logger logger = LoggerFactory.getLogger(TrainService.class);
+public class TrainStationService {
+    private static final Logger logger = LoggerFactory.getLogger(TrainStationService.class);
 
     public StationResult getAllCity(NoneRequest requestBody) {
         return new StationResult(new StationList(getAllStation()));

@@ -5,7 +5,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
+import com.sinosun.train.utils.HttpUtil;
+import com.sinosun.train.utils.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Connection;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.web.client.RestTemplate;
@@ -15,8 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by caogu on 2018/12/24 14:23.
- * Copyright © 2018.Sinosun All rights reserved
+ * Created on 2019/1/15 19:46.
+ *
+ * @author caogu
  */
 public class TrainTest {
 
@@ -38,7 +42,7 @@ public class TrainTest {
     private static String startTrainDate = "2019-01-08"; //列车起始站发成日期?
 
     private static String startStationNo = "24"; //出发站序
-    private static String endStationNo = "25"; //出发站序
+    private static String endStationNo = "25"; //到达站序
     private static String seat_types = "1413"; //车票列表倒数第三个参数
 
     private static String baseUrl = "https://kyfw.12306.cn";
@@ -47,21 +51,21 @@ public class TrainTest {
 
     //注:12306的查询接口经常改变（可能一天一改），其变动的主要规律为：https://kyfw.12306.cn/otn/leftTicket/query[A-Z]，就是最后一个字母做变动。
     // 因此，如果程序查询出异常，很大可能就是接口改变了，重新抓下查询接口即可。
-    private static String getTicket_list_url = baseUrl + publicName  + "/%s?" +
+    private static String getTicketListUrlFmt = baseUrl + publicName  + "/%s?" +
             "leftTicketDTO.train_date=%s&" +
             "leftTicketDTO.from_station=%s&" +
             "leftTicketDTO.to_station=%s&" +
             "purpose_codes=%s";
 
 
-    private static String getTicketPriceUrl = baseUrl + publicName  + "/leftTicket/queryTicketPrice?" +
+    private static String getTicketPriceUrlFmt = baseUrl + publicName  + "/leftTicket/queryTicketPrice?" +
             "train_no=%s&" +
             "from_station_no=%s&" +
             "to_station_no=%s&" +
             "seat_types=%s&" +
             "train_date=%s";
 
-    private static String getTicketLineUrl = baseUrl + publicName  + "/czxx/queryByTrainNo?" +
+    private static String getTicketLineUrlFmt = baseUrl + publicName  + "/czxx/queryByTrainNo?" +
             "train_no=%s&" +
             "from_station_telecode=%s&" +
             "to_station_telecode=%s&" +
@@ -70,21 +74,20 @@ public class TrainTest {
     @Test
     public void getTrainList()
     {
-        // 改用jsoup请求
-        String getTicketListUrl = String.format(getTicket_list_url, leftTicketUrl, fromDate, fromStation, toStation, purposeCodes);
-        JSONObject ret = restTemplate.getForObject(getTicketListUrl, JSONObject.class);
+        String getTicketListUrl = String.format(getTicketListUrlFmt, leftTicketUrl, fromDate, fromStation, toStation, purposeCodes);
+        JSONObject ret = JsonUtil.parseObject(HttpUtil.request(getTicketListUrl, Connection.Method.GET, null));
         System.out.println(JSON.toJSONString(ret, true));
 
         // 接口地址变化，获取新地址重新请求 可通过302错误码判断 302 redirect: 302 代表暂时性转移(Temporarily Moved )
         if (ret.containsKey("c_url")) {
             leftTicketUrl = ret.getString("c_url");
-            getTicketListUrl = String.format(getTicket_list_url, leftTicketUrl, fromDate, fromStation, toStation, purposeCodes);
-            ret = restTemplate.getForObject(getTicketListUrl, JSONObject.class);
+            getTicketListUrl = String.format(getTicketListUrlFmt, leftTicketUrl, fromDate, fromStation, toStation, purposeCodes);
+            ret = JsonUtil.parseObject(HttpUtil.request(getTicketListUrl, Connection.Method.GET, null));
             System.out.println(JSON.toJSONString(ret, true));
         }
 
         JSONObject data = ret.getJSONObject("data");
-        JSONObject map = data.getJSONObject("map"); //站点代码和名字映射
+        JSONObject map = data.getJSONObject("datamap"); //站点代码和名字映射
         JSONArray result = data.getJSONArray("result");
 
         for (int i = 0; i< result.size(); i++) {
@@ -109,7 +112,7 @@ public class TrainTest {
             String arriveTime = trainItem.get(9); //到达时刻
             String runTime = trainItem.get(10); //历时
 
-            String canWebBuy = trainItem.get(11); //是否能购买：Y 可以 N 不可 IS_TIME_NOT_BUY 列车运行图调整,暂停发售
+            String canWebBuy = trainItem.get(11); //是否能购买：Y 可以 N 不可 IS_TIME_NOT_BUY 列车运行图调整,暂停发售/列车停运
             String ypInfo = trainItem.get(12); //?
 
             String startTrainDate = trainItem.get(13); //列车起始站发成日期
@@ -153,7 +156,7 @@ public class TrainTest {
             System.out.println("二等座:" + edzNum);
             System.out.println("高级软卧:" + grNum);
             System.out.println("软卧:" + rwNum);
-            System.out.println("动卧:" + "+++");
+            System.out.println("动卧:" + srrbNum);
             System.out.println("硬卧:" + ywNum);
             System.out.println("软座:" + rzNum);
             System.out.println("硬座:" + yzNum);
@@ -161,18 +164,15 @@ public class TrainTest {
             System.out.println("其他:" + qtNum);
             System.out.println("备注:" + buttonTextInfo);
             System.out.println("\n");
-
-
         }
 
     }
 
 
     @Test
-    public void queryByTrainNo() {
-        // 改用jsoup请求
-        String getTicketListUrl = String.format(getTicketLineUrl, trainNo, fromStation, toStation, startTrainDate);
-        JSONObject ret = restTemplate.getForObject(getTicketListUrl, JSONObject.class);
+    public void getTrainLine() {
+        String getTicketLineUrl = String.format(getTicketLineUrlFmt, trainNo, fromStation, toStation, startTrainDate);
+        JSONObject ret = JsonUtil.parseObject(HttpUtil.request(getTicketLineUrl, Connection.Method.GET, null));
         System.out.println(JSON.toJSONString(ret, true));
 
         JSONObject result = new JSONObject();
@@ -221,9 +221,8 @@ public class TrainTest {
 
     @Test
     public void queryTicketPrice() {
-        // 改用jsoup请求
-        String getTicketListUrl = String.format(getTicketPriceUrl, trainNo, startStationNo, endStationNo, seat_types, fromDate);
-        JSONObject ret = restTemplate.getForObject(getTicketListUrl, JSONObject.class);
+        String getTicketPriceUrl = String.format(getTicketPriceUrlFmt, trainNo, startStationNo, endStationNo, seat_types, fromDate);
+        JSONObject ret = JsonUtil.parseObject(HttpUtil.request(getTicketPriceUrl, Connection.Method.GET, null));
         System.out.println(JSON.toJSONString(ret, true));
 
         JSONObject data = ret.getJSONObject("data");

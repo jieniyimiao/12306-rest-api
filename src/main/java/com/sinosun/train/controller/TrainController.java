@@ -1,10 +1,15 @@
 package com.sinosun.train.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sinosun.train.model.request.GetTicketListRequest;
+import com.sinosun.train.model.request.GetTrainLineRequest;
 import com.sinosun.train.model.request.NoneRequest;
 import com.sinosun.train.model.request.SearchCityRequest;
 import com.sinosun.train.model.response.StationResult;
-import com.sinosun.train.service.TrainService;
+import com.sinosun.train.model.response.TicketListResult;
+import com.sinosun.train.model.response.TrainLineResult;
+import com.sinosun.train.service.TrainStationService;
+import com.sinosun.train.service.TrainTicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,27 +37,38 @@ public class TrainController {
     private static final Logger logger = LoggerFactory.getLogger(TrainController.class);
 
     @Autowired
-    private TrainService trainService;
+    private TrainStationService trainStationService;
+    @Autowired
+    private TrainTicketService trainTicketService;
 
     @RequestMapping(value = "getAllCity")
     @ResponseBody
     public StationResult getAllCityHandler(HttpServletRequest request, @RequestBody JSONObject requestBody) {
-        return trainService.getAllCity(requestBody.toJavaObject(NoneRequest.class));
+        return trainStationService.getAllCity(requestBody.toJavaObject(NoneRequest.class));
     }
 
     @RequestMapping(value = "getHotCity")
     @ResponseBody
     public StationResult getHotCityHandler(HttpServletRequest request, @RequestBody JSONObject requestBody) {
-        return trainService.getHotCity(requestBody.toJavaObject(NoneRequest.class));
+        return trainStationService.getHotCity(requestBody.toJavaObject(NoneRequest.class));
     }
 
     @RequestMapping(value = "searchCity")
     @ResponseBody
     public StationResult searchCityHandler(HttpServletRequest request, @RequestBody JSONObject requestBody) {
-        return trainService.searchCity(requestBody.toJavaObject(SearchCityRequest.class));
+        return trainStationService.searchCity(requestBody.toJavaObject(SearchCityRequest.class));
     }
 
+    @RequestMapping(value = "getTicketList")
+    @ResponseBody
+    public TicketListResult getTicketListHandler(HttpServletRequest request, @RequestBody JSONObject requestBody) {
+        return trainTicketService.getTicketList(requestBody.toJavaObject(GetTicketListRequest.class));
+    }
 
-
+    @RequestMapping(value = "getTrainLine")
+    @ResponseBody
+    public TrainLineResult getTrainLineHandler(HttpServletRequest request, @RequestBody JSONObject requestBody) {
+        return trainTicketService.getTrainLine(requestBody.toJavaObject(GetTrainLineRequest.class));
+    }
 
 }

@@ -19,10 +19,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class HttpUtil {
     private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
-    private static final int TIMEOUT = (int) TimeUnit.SECONDS.toMillis(10);
+    private static final int TIMEOUT = (int) TimeUnit.SECONDS.toMillis(15);
 
     /**
-     * 执行HTTP请求
+     * 执行HTTP请求  <p>get请求时data传null</p>
      *
      * @param url    url完整地址
      * @param method Connection.Method.GET  Connection.Method.POST
@@ -30,6 +30,7 @@ public class HttpUtil {
      * @return HTTP接口返回值
      */
     public static String request(String url, Connection.Method method, JSONObject data) {
+        logger.info("======request url={} data={}", url, data);
         String result;
         try {
             Connection conn = Jsoup.connect(url)
@@ -45,12 +46,14 @@ public class HttpUtil {
             }
             Connection.Response response = conn.method(method).execute();
 
-            if (response.statusCode() == HttpStatus.OK.value()) {
+            int code = response.statusCode();
+            if (code == HttpStatus.OK.value() || code == HttpStatus.FOUND.value()) {
                 result = response.body();
             } else {
-                logger.error("执行url={}返回非200值, statusCode={}", url, response.statusCode());
+                logger.error("执行url={}返回非200/302值, statusCode={}", url, response.statusCode());
                 throw new ServiceException(PlatformErrorCode.SERVICE_INTERNAL_ERROR);
             }
+            logger.info("======request code={} result={}", code, result);
         } catch (IOException e) {
             logger.error("执行" + url + "出错, data=" + data, e);
             throw new ServiceException(PlatformErrorCode.SERVICE_INTERNAL_ERROR, e);

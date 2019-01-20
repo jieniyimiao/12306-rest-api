@@ -3,6 +3,8 @@ package com.sinosun.train;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sinosun.train.model.response.StationResult;
+import com.sinosun.train.model.response.TicketListResult;
+import com.sinosun.train.model.response.TrainLineResult;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,6 +55,28 @@ public class TrainRestTest {
         Assert.assertEquals("0", ret.getCode());
         Assert.assertTrue(ret.getResult().getStations().size() == 3);
 
+        System.out.println(JSON.toJSONString(ret, true));
+    }
+
+    @Test
+    public void getTicketList() {
+        JSONObject request = new JSONObject();
+        request.put("FromStationCode", "XAY");
+        request.put("ToStationCode", "XYY");
+        request.put("FromDate", "2019-01-28");
+//        request.put("IsStudent", true);
+        TicketListResult ret = restTemplate.postForObject(DOMAIN + "train/getTicketList", request, TicketListResult.class);
+        System.out.println(JSON.toJSONString(ret, true));
+    }
+
+    @Test
+    public void getTrainLine() {
+        JSONObject request = new JSONObject();
+        request.put("TrainCode", "K227");
+        request.put("FromStationCode", "XAY");
+        request.put("ToStationCode", "XYY");
+        request.put("FromDate", "2019-01-28");
+        TrainLineResult ret = restTemplate.postForObject(DOMAIN + "train/getTrainLine", request, TrainLineResult.class);
         System.out.println(JSON.toJSONString(ret, true));
     }
 }

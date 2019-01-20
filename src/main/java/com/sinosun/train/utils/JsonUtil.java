@@ -1,5 +1,6 @@
 package com.sinosun.train.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
@@ -77,5 +78,37 @@ public class JsonUtil {
         return jo;
     }
 
+    /**
+     * json字符串转JSON对象
+     * @param text json字符串
+     * @return json对象
+     */
+    public static JSONObject parseObject(String text) {
+        return JSONObject.parseObject(text);
+    }
+
+    /**
+     * json字符串转JSON数组
+     * @param text json字符串
+     * @return json数组
+     */
+    public static JSONArray parseArray(String text) {
+        return JSONObject.parseArray(text);
+    }
+
+    /**
+     * 对象转json字符串
+     * @param t java对象
+     * @param <T> 对象对应的类型
+     * @return json字符串
+     */
+    public static <T> String entity2Json(T t) {
+        try {
+            return JSON.toJSONString(t/*, SerializerFeature.DisableCircularReferenceDetect*/);
+        } catch (Exception e) {
+            logger.error("JsonUtil.entity2Json", e);
+            throw e;
+        }
+    }
 
 }

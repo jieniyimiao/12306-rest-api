@@ -14,7 +14,7 @@ public class ServiceException extends RuntimeException {
      */
     private String code;
 
-    /*public ServiceException(String message, String code) {
+    /*public ServiceException( String code, String message) {
         super(message);
         this.code = code;
     }*/
@@ -24,8 +24,18 @@ public class ServiceException extends RuntimeException {
         this.code = businessErrorCode.getCode();
     }
 
+    public ServiceException(BusinessErrorCode businessErrorCode, String extraMessage) {
+        super(businessErrorCode.getMessage() + "|" + extraMessage);
+        this.code = businessErrorCode.getCode();
+    }
+
     public ServiceException(BusinessErrorCode businessErrorCode, Throwable cause) {
         super(businessErrorCode.getMessage(), cause);
+        this.code = businessErrorCode.getCode();
+    }
+
+    public ServiceException(BusinessErrorCode businessErrorCode, Throwable cause, String extraMessage) {
+        super(businessErrorCode.getMessage() + "|" + extraMessage, cause);
         this.code = businessErrorCode.getCode();
     }
 
@@ -34,12 +44,22 @@ public class ServiceException extends RuntimeException {
         this.code = platformErrorCode.getCode();
     }
 
+    public ServiceException(PlatformErrorCode platformErrorCode, String extraMessage) {
+        super(platformErrorCode.getMessage() + "|" + extraMessage);
+        this.code = platformErrorCode.getCode();
+    }
+
     public ServiceException(PlatformErrorCode businessErrorCode, Throwable cause) {
         super(businessErrorCode.getMessage(), cause);
         this.code = businessErrorCode.getCode();
     }
 
-    /*public ServiceException(String message, String code, Throwable cause) {
+    public ServiceException(PlatformErrorCode businessErrorCode, Throwable cause, String extraMessage) {
+        super(businessErrorCode.getMessage() + "|" + extraMessage, cause);
+        this.code = businessErrorCode.getCode();
+    }
+
+    /*public ServiceException( String code, String message, Throwable cause) {
         super(message, cause);
         this.code = code;
     }*/

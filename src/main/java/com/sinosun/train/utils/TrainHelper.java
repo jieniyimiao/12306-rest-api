@@ -1,5 +1,6 @@
 package com.sinosun.train.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.sinosun.train.constants.UrlConstant;
@@ -49,5 +50,14 @@ public class TrainHelper {
             logger.error("从12306获取到的火车站点信息为空");
         }
         return stations;
+    }
+
+    /**
+     * 向12306发送get请求，并返回json对象
+     * @param url 请求URL
+     * @return json对象
+     */
+    public static JSONObject requestTo12306(String url) {
+        return JsonUtil.parseObject(HttpUtil.request(url, Connection.Method.GET, null));
     }
 }
