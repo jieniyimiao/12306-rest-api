@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
+import com.alibaba.fastjson.serializer.NameFilter;
+import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.sinosun.train.enums.PlatformErrorCode;
 import com.sinosun.train.exception.ServiceException;
 import org.apache.commons.io.FileUtils;
@@ -80,6 +82,7 @@ public class JsonUtil {
 
     /**
      * json字符串转JSON对象
+     *
      * @param text json字符串
      * @return json对象
      */
@@ -89,6 +92,7 @@ public class JsonUtil {
 
     /**
      * json字符串转JSON数组
+     *
      * @param text json字符串
      * @return json数组
      */
@@ -98,7 +102,8 @@ public class JsonUtil {
 
     /**
      * 对象转json字符串
-     * @param t java对象
+     *
+     * @param t   java对象
      * @param <T> 对象对应的类型
      * @return json字符串
      */
@@ -108,6 +113,40 @@ public class JsonUtil {
         } catch (Exception e) {
             logger.error("JsonUtil.entity2Json", e);
             throw e;
+        }
+    }
+
+    /**
+     * json对象的key的首字母转为大写
+     * <p>采用先序列化在反序列化，在序列化时改变key的思路</p>
+     * @param object json对象
+     * @return key首字母转为大写的json对象
+     */
+    public static JSONObject keyFirstCharToUpCase(Object object) {
+        return JSONObject.parseObject(JSON.toJSONString(object, new PascalNameFilter()));
+    }
+
+    /**
+     * json对象的key的首字母转为小写
+     *
+     * @param object json对象
+     * @return key首字母转为小写的json对象
+     */
+    public static JSONObject keyFirstCharToLowerCase(Object object) {
+        return JSONObject.parseObject(JSON.toJSONString(object, new PascalNameLowerFilter()));
+    }
+
+    static class PascalNameLowerFilter implements NameFilter {
+        @Override
+        public String process(Object source, String name, Object value) {
+            if (name == null || name.length() == 0) {
+                return name;
+            }
+
+            char[] chars = name.toCharArray();
+            chars[0] = Character.toLowerCase(chars[0]);
+
+            return new String(chars);
         }
     }
 
