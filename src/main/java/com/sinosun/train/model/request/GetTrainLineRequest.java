@@ -46,7 +46,7 @@ public class GetTrainLineRequest {
             throw new ServiceException(BusinessErrorCode.REQUEST_PARAM_MISS);
         }
 
-        if (new DateTime(fromDate).isBeforeNow()) {
+        if (new DateTime(fromDate).plusDays(1).minusSeconds(1).isBeforeNow()) {
             throw new ServiceException(BusinessErrorCode.REQUEST_PARAM_ERROR, "出发时间必须大于当前时间");
         }
     }

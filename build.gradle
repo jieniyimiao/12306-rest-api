@@ -39,4 +39,6 @@ dependencies {
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
 	compile group: 'commons-io', name: 'commons-io', version: '2.6'
 	compile 'org.jetbrains:annotations:16.0.3'
+	compile group: 'org.projectlombok', name: 'lombok', version: '1.18.4'
+
 }

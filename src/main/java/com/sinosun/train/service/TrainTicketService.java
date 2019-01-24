@@ -17,6 +17,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -236,41 +237,45 @@ public class TrainTicketService {
         JSONObject ret12306 = TrainHelper.requestTo12306(getTicketLineUrl);
         JSONArray stops = ret12306.getJSONObject("data").getJSONArray("data");
 
-        JSONObject stopInfoFirst = stops.getJSONObject(0);
-        String startStationName = stopInfoFirst.getString("start_station_name"); //出发城市
-        String endStationName = stopInfoFirst.getString("end_station_name"); //到达城市
-        String stationTrainCode = stopInfoFirst.getString("station_train_code"); //车次号
-        String trainClassName = stopInfoFirst.getString("train_class_name"); //车次类型， 快速等
-        String serviceType = stopInfoFirst.getString("service_type"); //服务类型 0表示无空调 其他表示有空调
-        String serviceName = "0".equals(serviceType) ? "无空调" : "有空调";
+        TrainLine trainLine = new TrainLine();
+        if (!CollectionUtils.isEmpty(stops)) {
+            JSONObject stopInfoFirst = stops.getJSONObject(0);
+            String startStationName = stopInfoFirst.getString("start_station_name"); //出发城市
+            String endStationName = stopInfoFirst.getString("end_station_name"); //到达城市
+            String stationTrainCode = stopInfoFirst.getString("station_train_code"); //车次号
+            String trainClassName = stopInfoFirst.getString("train_class_name"); //车次类型， 快速等
+            String serviceType = stopInfoFirst.getString("service_type"); //服务类型 0表示无空调 其他表示有空调
+            String serviceName = "0".equals(serviceType) ? "无空调" : "有空调";
 
-        List<Stop> resultStops = Lists.newArrayList();
-        for (int i = 0; i < stops.size(); i++) {
-            Stop stop = new Stop();
-            JSONObject stopInfo = stops.getJSONObject(i);
-            String startTime = stopInfo.getString("start_time"); //出发时间（格式 HH:mm）
-            String arriveTime = stopInfo.getString("arrive_time"); //到达时间（格式 HH:mm 或者----）
-            String stationName = stopInfo.getString("station_name"); //站名
-            String stopoverTime = stopInfo.getString("stopover_time"); //停留时间（分钟） 可能为----
-            String stationNo = stopInfo.getString("station_no"); //站序（01开始）
-            Boolean isSearchStation = stopInfo.getBoolean("isEnabled"); //是否是我们搜索的出行站和到达站 false不是 true是
+            List<Stop> resultStops = Lists.newArrayList();
+            for (int i = 0; i < stops.size(); i++) {
+                Stop stop = new Stop();
+                JSONObject stopInfo = stops.getJSONObject(i);
+                String startTime = stopInfo.getString("start_time"); //出发时间（格式 HH:mm）
+                String arriveTime = stopInfo.getString("arrive_time"); //到达时间（格式 HH:mm 或者----）
+                String stationName = stopInfo.getString("station_name"); //站名
+                String stopoverTime = stopInfo.getString("stopover_time"); //停留时间（分钟） 可能为----
+                String stationNo = stopInfo.getString("station_no"); //站序（01开始）
+                Boolean isSearchStation = stopInfo.getBoolean("isEnabled"); //是否是我们搜索的出行站和到达站 false不是 true是
 
-            stop.setStartTime(startTime);
-            stop.setArriveTime(arriveTime);
-            stop.setStationName(stationName);
-            stop.setStopoverTime(stopoverTime);
-            stop.setStationNo(stationNo);
-            stop.setIsSearchStation(isSearchStation);
-            resultStops.add(stop);
+                stop.setStartTime(startTime);
+                stop.setArriveTime(arriveTime);
+                stop.setStationName(stationName);
+                stop.setStopoverTime(stopoverTime);
+                stop.setStationNo(stationNo);
+                stop.setIsSearchStation(isSearchStation);
+                resultStops.add(stop);
+            }
+
+            trainLine.setTrainCode(stationTrainCode);
+            trainLine.setStartStationName(startStationName);
+            trainLine.setEndStationName(endStationName);
+            trainLine.setTrainClassName(trainClassName);
+            trainLine.setServiceName(serviceName);
+            trainLine.setStops(resultStops);
+            return trainLine;
         }
 
-        TrainLine trainLine = new TrainLine();
-        trainLine.setTrainCode(stationTrainCode);
-        trainLine.setStartStationName(startStationName);
-        trainLine.setEndStationName(endStationName);
-        trainLine.setTrainClassName(trainClassName);
-        trainLine.setServiceName(serviceName);
-        trainLine.setStops(resultStops);
         return trainLine;
     }
 
