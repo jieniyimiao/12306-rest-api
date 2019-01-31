@@ -94,8 +94,8 @@ Ticket
 | TrainType | 车次类型 | String | N |  |
 | FromStation | 出发站点名字 | String | N |  |
 | ToStation | 到达站点名字 | String | N |  |
-| FromStationType | 出发站点类型名 "始|终|过"类型 | String | N |  |
-| ToStationType | 到达站点类型名 "始|终|过"类型 | String | N |  |
+| FromStationType | 出发站点类型名 "始-终-过"类型 | String | N |  |
+| ToStationType | 到达站点类型名 "始-终-过"类型 | String | N |  |
 | FromTime | 出发时间 | String | N |  |
 | ToTime | 到达时间 | String | N |  |
 | RunTime | 运行时间 | String | N |  |
