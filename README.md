@@ -100,7 +100,7 @@ Ticket
 | ToTime | 到达时间 | String | N |  |
 | RunTime | 运行时间 | String | N |  |
 | CanBook | 该车次是否有余票可以预定，所有席别无票则为false | Boolean | N |  |
-| SwzNum | 商务座/特等座剩余票数 有|表示充足 --|表示无此类型的座位 数字表示剩余座位数 下同| String | N |  |
+| SwzNum | 商务座/特等座剩余票数 （有）表示充足 （--）表示无此类型的座位 数字表示剩余座位数 下同| String | N |  |
 | SwzPrice | 商务座/特等座价格 | BigDecimal | N |  |
 | YdzNum | 一等座剩余票数| String | N |  |
 | YdzPrice | 一等座价格 | BigDecimal | N |  |
