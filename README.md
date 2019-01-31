@@ -100,7 +100,7 @@ Ticket
 | ToTime | 到达时间 | String | N |  |
 | RunTime | 运行时间 | String | N |  |
 | CanBook | 该车次是否有余票可以预定，所有席别无票则为false | Boolean | N |  |
-| SwzNum | 商务座/特等座剩余票数 （有）表示充足 （--）表示无此类型的座位 数字表示剩余座位数 下同| String | N |  |
+| SwzNum | 商务座/特等座剩余票数| String | N | （有）表示充足 （--）表示无此类型的座位 数字表示剩余座位数 下同 |
 | SwzPrice | 商务座/特等座价格 | BigDecimal | N |  |
 | YdzNum | 一等座剩余票数| String | N |  |
 | YdzPrice | 一等座价格 | BigDecimal | N |  |
@@ -144,7 +144,7 @@ Ticket
 | EndStationName | 终点站名 | String | N | |
 | TrainCode | 车次代码 | String | N | |
 | TrainClassName | 车次类型 例如：快速 | String | N | |
-| ServiceName | 服务类型 例如："无空调" ， "有空调" | String | N | |
+| ServiceName | 服务类型  | String | N | 例如："无空调" ， "有空调" |
 
 Stop
 
@@ -155,5 +155,5 @@ Stop
 | StationName | 到达站名 | String | N |  |
 | StopoverTime | 停留时间（分钟） 可能为---- | String | N |  |
 | StationNo | 站序（01开始） | String | N |  |
-| IsSearchStation | 是否是我们搜索的出行站和到达站 false不是 true是 | String | N |  |
+| IsSearchStation | 是否是我们搜索的出行站和到达站 | String | N |  false不是 true是 |
 
