@@ -67,3 +67,93 @@ Station
 | StationCode | 车站代码 | String | N |  |
 | pingYin | 车站拼音 | String | N |  |
 | PingYinShort | 车站简拼 | String | N |  |
+
+### 3.3 火车票查询
+#### 使用说明
+#### 方法名称
+- ```train/getTicketList```
+#### 使用说明
+- 查询火车票列表
+#### 请求参数
+| 节点 | 名称 | 类型 | 可为空 | 说明 |
+| :------:| :------:| :------: | :------: |:------: |
+| FromStationCode | 出发站点代码 | String | N | |
+| ToStationCode | 到达站点代码 | String | N | |
+| FromDate | 出发日期（格式：yyyy-mm-dd） | String | N | |
+| IsStudent | 是否是学生票(默认成人票) | Boolean | N | |
+#### 响应参数
+| 节点 | 名称 | 类型 | 可为空 | 说明 |
+| :------:| :------:| :------: | :------: |:------: |
+| Tickets | 车票信息列表 | Ticket[] | N | |
+
+Ticket
+
+| 节点 | 名称 | 类型 | 可为空 | 说明 |
+| :------:| :------:| :------: | :------: |:------: |
+| TrainCode | 车次代码 | String | N | |
+| TrainType | 车次类型 | String | N |  |
+| FromStation | 出发站点名字 | String | N |  |
+| ToStation | 到达站点名字 | String | N |  |
+| FromStationType | 出发站点类型名 "始|终|过"类型 | String | N |  |
+| ToStationType | 到达站点类型名 "始|终|过"类型 | String | N |  |
+| FromTime | 出发时间 | String | N |  |
+| ToTime | 到达时间 | String | N |  |
+| RunTime | 运行时间 | String | N |  |
+| CanBook | 该车次是否有余票可以预定，所有席别无票则为false | Boolean | N |  |
+| SwzNum | 商务座/特等座剩余票数 有|表示充足 --|表示无此类型的座位 数字表示剩余座位数 下同| String | N |  |
+| SwzPrice | 商务座/特等座价格 | BigDecimal | N |  |
+| YdzNum | 一等座剩余票数| String | N |  |
+| YdzPrice | 一等座价格 | BigDecimal | N |  |
+| EdzNum | 二等座剩余票数| String | N |  |
+| EdzPrice | 二等座价格 | BigDecimal | N |  |
+| GjrwNum | 高级软卧剩余票数| String | N |  |
+| GjrwPrice | 高级软卧价格 | BigDecimal | N |  |
+| RwNum | 软卧/一等卧价格| String | N |  |
+| RwPrice | 软卧/一等卧剩余票数 | BigDecimal | N |  |
+| DwNum | 动卧剩余票数| String | N |  |
+| DwPrice | 动卧价格 | BigDecimal | N |  |
+| YwNum | 硬卧剩余票数| String | N |  |
+| YwPrice | 硬卧价格 | BigDecimal | N |  |
+| RzNum | 软座剩余票数| String | N |  |
+| RzPrice | 软座价格 | BigDecimal | N |  |
+| YzNum | 硬座剩余票数| String | N |  |
+| YzPrice | 硬座价格 | BigDecimal | N |  |
+| WzNum | 无座剩余票数| String | N |  |
+| WzPrice | 无座价格 | BigDecimal | N |  |
+| QtNum | 其他剩余票数| String | N |  |
+| QtPrice | 其他价格 | BigDecimal | N |  |
+
+### 3.4 查询车次经停信息
+#### 使用说明
+#### 方法名称
+- ```train/getTrainLine```
+#### 使用说明
+- 查询车次经停信息
+#### 请求参数
+| 节点 | 名称 | 类型 | 可为空 | 说明 |
+| :------:| :------:| :------: | :------: |:------: |
+| TrainCode | 车次代码 | String | N | |
+| FromStationCode | 出发站点代码 | String | N | |
+| ToStationCode | 到达站点代码 | String | N | |
+| FromDate | 出发日期（格式：yyyy-mm-dd） | String | N | |
+#### 响应参数
+| 节点 | 名称 | 类型 | 可为空 | 说明 |
+| :------:| :------:| :------: | :------: |:------: |
+| Stops | 经停信息列表 | Stop[] | N | |
+| StartStationName | 始发站名 | String | N | |
+| EndStationName | 终点站名 | String | N | |
+| TrainCode | 车次代码 | String | N | |
+| TrainClassName | 车次类型 例如：快速 | String | N | |
+| ServiceName | 服务类型 例如："无空调" ， "有空调" | String | N | |
+
+Stop
+
+| 节点 | 名称 | 类型 | 可为空 | 说明 |
+| :------:| :------:| :------: | :------: |:------: |
+| StartTime | 出发时间（格式 HH:mm） | String | N | |
+| ArriveTime | 到达时间（格式 HH:mm 或者----） | String | N |  |
+| StationName | 到达站名 | String | N |  |
+| StopoverTime | 停留时间（分钟） 可能为---- | String | N |  |
+| StationNo | 站序（01开始） | String | N |  |
+| IsSearchStation | 是否是我们搜索的出行站和到达站 false不是 true是 | String | N |  |
+
