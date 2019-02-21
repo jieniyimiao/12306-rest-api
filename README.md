@@ -90,6 +90,7 @@ Ticket
 
 | 节点 | 名称 | 类型 | 可为空 | 说明 |
 | :------:| :------:| :------: | :------: |:------: |
+| TrainNo | 列车号 | String | N | |
 | TrainCode | 车次代码 | String | N | |
 | TrainType | 车次类型 | String | N |  |
 | FromStation | 出发站点名字 | String | N |  |
@@ -132,6 +133,7 @@ Ticket
 #### 请求参数
 | 节点 | 名称 | 类型 | 可为空 | 说明 |
 | :------:| :------:| :------: | :------: |:------: |
+| TrainNo | 列车号 | String | N | |
 | TrainCode | 车次代码 | String | N | |
 | FromStationCode | 出发站点代码 | String | N | |
 | ToStationCode | 到达站点代码 | String | N | |

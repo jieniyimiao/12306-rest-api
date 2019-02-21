@@ -13,6 +13,12 @@ import java.math.BigDecimal;
  */
 @JSONType(naming = PropertyNamingStrategy.PascalCase)
 public class Ticket {
+
+    /**
+     * 列车号
+     */
+    private String trainNo;
+
     /**
      * 车次代码
      */
@@ -178,6 +184,14 @@ public class Ticket {
      * 其他价格
      */
     private BigDecimal qtPrice;
+
+    public String getTrainNo() {
+        return trainNo;
+    }
+
+    public void setTrainNo(String trainNo) {
+        this.trainNo = trainNo;
+    }
 
     public String getTrainCode() {
         return trainCode;
@@ -438,6 +452,7 @@ public class Ticket {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
+                .add("trainNo",trainNo)
                 .add("trainCode", trainCode)
                 .add("trainType", trainType)
                 .add("fromStation", fromStation)

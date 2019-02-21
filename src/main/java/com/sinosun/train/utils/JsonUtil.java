@@ -1,5 +1,6 @@
 package com.sinosun.train.utils;
 
+import cn.hutool.core.io.IoUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -14,6 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created on 2019/1/14 21:53.
@@ -61,6 +64,24 @@ public class JsonUtil {
         return jo;
     }
 
+
+    /**
+     * 读取json文件并且返回json数组
+     *
+     * @param inputStream json文件流
+     * @return json数组
+     */
+    public static JSONArray readFileToJsonArray(InputStream inputStream) {
+        JSONArray jo;
+        try {
+            String input = IoUtil.read(inputStream, StandardCharsets.UTF_8);
+            jo = JSONObject.parseArray(input);
+        } catch (Exception e) {
+            logger.error("读取json文件出错", e);
+            throw new ServiceException(PlatformErrorCode.SERVICE_INTERNAL_ERROR, e);
+        }
+        return jo;
+    }
 
     /**
      * 读取json文件并且返回json数组

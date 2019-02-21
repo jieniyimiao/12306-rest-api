@@ -72,10 +72,11 @@ public class TrainRestTest {
     @Test
     public void getTrainLine() {
         JSONObject request = new JSONObject();
+        request.put("TrainNo", "5n000G167004");
         request.put("TrainCode", "K227");
         request.put("FromStationCode", "XAY");
         request.put("ToStationCode", "XYY");
-        request.put("FromDate", "2019-01-28");
+        request.put("FromDate", "2019-02-22");
         TrainLineResult ret = restTemplate.postForObject(DOMAIN + "train/getTrainLine", request, TrainLineResult.class);
         System.out.println(JSON.toJSONString(ret, true));
     }

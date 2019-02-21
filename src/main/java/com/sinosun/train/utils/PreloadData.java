@@ -1,5 +1,6 @@
 package com.sinosun.train.utils;
 
+import cn.hutool.core.io.resource.ClassPathResource;
 import com.sinosun.train.constants.FileNameConstant;
 import com.sinosun.train.enums.PlatformErrorCode;
 import com.sinosun.train.exception.ServiceException;
@@ -42,8 +43,8 @@ public class PreloadData {
 
     @NotNull
     private static List<Station> getTrainCityData(String fileName) {
-        String path = getFilePath("train" + File.separator + fileName);
-        return JsonUtil.readFileToJsonArray(path).toJavaList(Station.class);
+        ClassPathResource resource = new ClassPathResource("train" + File.separator + fileName);
+        return JsonUtil.readFileToJsonArray(resource.getStream()).toJavaList(Station.class);
     }
 
     @NotNull
