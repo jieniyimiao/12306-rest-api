@@ -1,5 +1,6 @@
 package com.sinosun.train.utils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -10,7 +11,9 @@ import org.jsoup.Connection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 2019/1/16 20:42.
@@ -59,5 +62,42 @@ public class TrainHelper {
      */
     public static JSONObject requestTo12306(String url) {
         return JsonUtil.parseObject(HttpUtil.request(url, Connection.Method.GET, null));
+    }
+
+    /**
+     * 从12306获取最新的 车次 - 列车号 关联数据
+     *
+     * @return
+     */
+    public static Map<String, Object> getAllTrainNoListFromNet() {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        String httpRes = HttpUtil.request(UrlConstant.TRAIN_ALL_CODE_LIST_URL, Connection.Method.GET, null);
+
+        // 返回例子：{ "2019-03-17": { "D": [ { "station_train_code": "D1(北京-沈阳南)", "train_no": "24000000D120" },.... ], .... } }
+        if (StringUtils.isNotEmpty(httpRes) && httpRes.startsWith("var")) {
+            httpRes = httpRes.replaceAll("var train_list =", "");
+
+            JSONObject jsonObject = JSONObject.parseObject(httpRes);
+
+            // 第一层遍历，时间
+            for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+                // 获取列车类型对象
+                JSONObject dateElementObj = (JSONObject) entry.getValue();
+                // 遍历每个时间的每个列车类型
+                for (Map.Entry<String, Object> trainTypeEntry : dateElementObj.entrySet()) {
+                    JSONArray trainTypeArray = (JSONArray) trainTypeEntry.getValue();
+                    // 遍历每个车型的车次
+                    for (int i = 0; i < trainTypeArray.size(); i++) {
+                        JSONObject trainInfo = trainTypeArray.getJSONObject(i);
+
+                        resultMap.put(trainInfo.getString("station_train_code").replaceAll("[^0-9a-zA-Z]", ""), trainInfo.getString("train_no"));
+                    }
+                }
+            }
+        } else {
+            logger.error("从12306获取到的火车站点信息为空");
+        }
+        return resultMap;
     }
 }

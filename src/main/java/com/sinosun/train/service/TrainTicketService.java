@@ -13,6 +13,7 @@ import com.sinosun.train.model.request.GetTicketListRequest;
 import com.sinosun.train.model.request.GetTrainLineRequest;
 import com.sinosun.train.model.response.*;
 import com.sinosun.train.model.vo.TicketPrice;
+import com.sinosun.train.utils.PreloadData;
 import com.sinosun.train.utils.TrainHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -74,11 +75,7 @@ public class TrainTicketService {
         String trainNo = TrainCodeTrainNoMap.getTrainNo(requestBody.getTrainCode());
         // 在获取不到trainNo时，trainCode必须有值
         if (StringUtils.isEmpty(trainNo)) {
-            if (StringUtils.isEmpty(requestBody.getTrainNo())) {
-                throw new ServiceException(BusinessErrorCode.REQUEST_PARAM_MISS);
-            } else {
-                trainNo = requestBody.getTrainNo();
-            }
+            trainNo = (String) PreloadData.getTrainAllCode().get(requestBody.getTrainCode());
         }
         String fromDate = convertFromDate(requestBody.getFromDate());
         return new TrainLineResult(getTrainLineFrom12306(trainNo, fromDate, requestBody.getFromStationCode(), requestBody.getToStationCode()));

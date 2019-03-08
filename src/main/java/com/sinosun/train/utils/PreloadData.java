@@ -13,6 +13,7 @@ import org.springframework.util.ResourceUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 2019/1/14 10:26.
@@ -30,6 +31,10 @@ public class PreloadData {
      * 火车热点站点数据
      */
     private static List<Station> TRAIN_HOT_STATION = getTrainCityData(FileNameConstant.TRAIN_HOT_STATION_LOCAL_FILE_NAME);
+    /**
+     * 列车号全量数据
+     */
+    private static Map<String, Object> TRAIN_ALL_CODE = getTrainAllCodeData(FileNameConstant.TRAIN_ALL_CODE_LOCAL_FILE_NAME);
 
     @NotNull
     public static List<Station> getTrainAllCity() {
@@ -42,9 +47,20 @@ public class PreloadData {
     }
 
     @NotNull
+    public static Map<String, Object> getTrainAllCode() {
+        return TRAIN_ALL_CODE;
+    }
+
+    @NotNull
     private static List<Station> getTrainCityData(String fileName) {
         ClassPathResource resource = new ClassPathResource("train" + File.separator + fileName);
         return JsonUtil.readFileToJsonArray(resource.getStream()).toJavaList(Station.class);
+    }
+
+    @NotNull
+    private static Map<String, Object> getTrainAllCodeData(String fileName) {
+        ClassPathResource resource = new ClassPathResource("train" + File.separator + fileName);
+        return JsonUtil.readJsonFile(resource.getStream());
     }
 
     @NotNull

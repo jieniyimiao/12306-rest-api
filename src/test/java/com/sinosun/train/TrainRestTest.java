@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.sinosun.train.model.response.StationResult;
 import com.sinosun.train.model.response.TicketListResult;
 import com.sinosun.train.model.response.TrainLineResult;
+import com.sinosun.train.model.response.TrainStationTimeTableResult;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -78,6 +79,16 @@ public class TrainRestTest {
         request.put("ToStationCode", "XYY");
         request.put("FromDate", "2019-02-22");
         TrainLineResult ret = restTemplate.postForObject(DOMAIN + "train/getTrainLine", request, TrainLineResult.class);
+        System.out.println(JSON.toJSONString(ret, true));
+    }
+
+    @Test
+    public void getTrainStationTimeTable() {
+        JSONObject request = new JSONObject();
+        request.put("TrainStationName", "南靖");
+        request.put("TrainStationCode", "NJS");
+        request.put("TrainStartDate", "2019-03-08");
+        TrainStationTimeTableResult ret = restTemplate.postForObject(DOMAIN + "train/getTrainStationTimeTable", request, TrainStationTimeTableResult.class);
         System.out.println(JSON.toJSONString(ret, true));
     }
 }

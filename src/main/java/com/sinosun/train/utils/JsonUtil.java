@@ -45,6 +45,24 @@ public class JsonUtil {
     }
 
     /**
+     * 读取json文件流并且返回json对象
+     *
+     * @param inputStream json文件流
+     * @return json数组
+     */
+    public static JSONObject readJsonFile(InputStream inputStream) {
+        JSONObject jo;
+        try {
+            String input = IoUtil.read(inputStream, StandardCharsets.UTF_8);
+            jo = JSONObject.parseObject(input);
+        } catch (Exception e) {
+            logger.error("读取json文件流出错", e);
+            throw new ServiceException(PlatformErrorCode.SERVICE_INTERNAL_ERROR, e);
+        }
+        return jo;
+    }
+
+    /**
      * 读取json文件并且返回class对象
      *
      * @param filePath json文件路径
