@@ -41,5 +41,5 @@ dependencies {
 	compile 'org.jetbrains:annotations:16.0.3'
 	compile group: 'org.projectlombok', name: 'lombok', version: '1.18.4'
 	compile group: 'cn.hutool', name: 'hutool-all', version: '4.1.19'
-
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '1.5.10.RELEASE'
 }

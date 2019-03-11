@@ -2,10 +2,7 @@ package com.sinosun.train.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.sinosun.train.model.request.*;
-import com.sinosun.train.model.response.StationResult;
-import com.sinosun.train.model.response.TicketListResult;
-import com.sinosun.train.model.response.TrainLineResult;
-import com.sinosun.train.model.response.TrainStationTimeTableResult;
+import com.sinosun.train.model.response.*;
 import com.sinosun.train.service.TrainStationService;
 import com.sinosun.train.service.TrainStationTimeTableService;
 import com.sinosun.train.service.TrainTicketService;
@@ -52,6 +49,12 @@ public class TrainController {
     @ResponseBody
     public StationResult getHotCityHandler(HttpServletRequest request, @RequestBody JSONObject requestBody) {
         return trainStationService.getHotCity(requestBody.toJavaObject(NoneRequest.class));
+    }
+
+    @RequestMapping(value = "getTrainCode")
+    @ResponseBody
+    public TrainCodeResult getTrainCodeHandler(HttpServletRequest request, @RequestBody JSONObject requestBody) {
+        return trainStationService.getAllTrainCode(requestBody.toJavaObject(NoneRequest.class));
     }
 
     @RequestMapping(value = "searchCity")

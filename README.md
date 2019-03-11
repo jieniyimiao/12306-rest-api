@@ -22,7 +22,7 @@
 | Result | 结果数据 | Object | Y | 不同的请求返回的不同结果。 |
 
 ## 3.火车票业务协议
-### 3.1获取所有/热点车站信息
+`### 3.1 获取所有/热点车站信息
 #### 方法名称
 - ```train/getAllCity```
 - ```train/getHotCity```
@@ -45,7 +45,7 @@ Station
 | pingYin | 车站拼音 | String | N |  |
 | PingYinShort | 车站简拼 | String | N |  |
 
-### 3.2关键字搜索车站
+### 3.2 关键字搜索车站
 #### 使用说明
 #### 方法名称
 - ```train/searchCity```
@@ -199,3 +199,18 @@ Stop
 | startDayDiff | 发车日差异天数（猜测）  | String | N | 例如：0 |
 | stopoverTime | 查询站点停靠时间  | String | N | 例如：7 |
 | runningTime | 到达查询站点时，列车运行时间  | String | N | 例如：52分 |
+
+### 3.6 获取所有 车次 - 列车号 对应关系表
+#### 方法名称
+- ```train/getTrainCode```
+#### 使用说明
+- ```train/getTrainCode```获取所有 车次 - 列车号 对应关系信息，拉取完信息存入redis，redis有效期为一天。
+#### 请求参数
+无
+#### 响应示例
+```json
+{
+    "C6628" : "76000C662801",
+    ......
+}
+```

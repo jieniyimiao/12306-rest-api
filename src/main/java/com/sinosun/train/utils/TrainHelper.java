@@ -56,6 +56,37 @@ public class TrainHelper {
     }
 
     /**
+     * 从12306获取最新的热门火车站点数据
+     * @return 火车站点数据
+     */
+    public static List<Station> getTrainHotStationFromNet() {
+        List<Station> stations = Lists.newArrayList();
+
+        String httpRes = HttpUtil.request(UrlConstant.TRAIN_HOT_STATION_URL, Connection.Method.GET, null);
+        if (StringUtils.isNotEmpty(httpRes)) {
+            // var station_names ='@bjb|北京北|VAP|beijingbei|bjb|0@bjd|北京东|BOP|beijingdong|bjd|1'
+            String originalStationStr = httpRes.substring(httpRes.indexOf("\'") + 1, httpRes.lastIndexOf("\'"));
+            List<String> originalStations = Lists.newArrayList(Splitter.on("@").omitEmptyStrings().trimResults().split(originalStationStr));
+            for (String originalStation : originalStations) {
+                List<String> stationInfo = Lists.newArrayList(Splitter.on("|").omitEmptyStrings().trimResults().split(originalStation));
+                if (stationInfo.size() > 3) {
+                    Station station = new Station();
+                    station.setPingYinShort(stationInfo.get(0));
+                    station.setName(stationInfo.get(1));
+                    station.setStationCode(stationInfo.get(2));
+                    station.setPingYin(stationInfo.get(3));
+                    stations.add(station);
+                } else {
+                    logger.error("从12306获取到的热门火车站点信息有误，stationInfo={}", originalStation);
+                }
+            }
+        } else {
+            logger.error("从12306获取到的热门火车站点信息为空");
+        }
+        return stations;
+    }
+
+    /**
      * 向12306发送get请求，并返回json对象
      * @param url 请求URL
      * @return json对象
@@ -72,32 +103,39 @@ public class TrainHelper {
     public static Map<String, Object> getAllTrainNoListFromNet() {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
-        String httpRes = HttpUtil.request(UrlConstant.TRAIN_ALL_CODE_LIST_URL, Connection.Method.GET, null);
+        try {
+            // HttpUtil.request获得的结果在json对象序列化时存在unclosed.str异常
+            // String httpRes = HttpUtil.request(UrlConstant.TRAIN_ALL_CODE_LIST_URL, Connection.Method.GET, null);
+            String httpRes = cn.hutool.http.HttpUtil.get(UrlConstant.TRAIN_ALL_CODE_LIST_URL);
 
-        // 返回例子：{ "2019-03-17": { "D": [ { "station_train_code": "D1(北京-沈阳南)", "train_no": "24000000D120" },.... ], .... } }
-        if (StringUtils.isNotEmpty(httpRes) && httpRes.startsWith("var")) {
-            httpRes = httpRes.replaceAll("var train_list =", "");
+            // 返回例子：{ "2019-03-17": { "D": [ { "station_train_code": "D1(北京-沈阳南)", "train_no": "24000000D120" },.... ], .... } }
+            if (StringUtils.isNotEmpty(httpRes) && httpRes.startsWith("var")) {
+                httpRes = httpRes.replaceAll("var train_list =", "");
 
-            JSONObject jsonObject = JSONObject.parseObject(httpRes);
+                JSONObject jsonObject = JSONObject.parseObject(httpRes);
 
-            // 第一层遍历，时间
-            for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
-                // 获取列车类型对象
-                JSONObject dateElementObj = (JSONObject) entry.getValue();
-                // 遍历每个时间的每个列车类型
-                for (Map.Entry<String, Object> trainTypeEntry : dateElementObj.entrySet()) {
-                    JSONArray trainTypeArray = (JSONArray) trainTypeEntry.getValue();
-                    // 遍历每个车型的车次
-                    for (int i = 0; i < trainTypeArray.size(); i++) {
-                        JSONObject trainInfo = trainTypeArray.getJSONObject(i);
+                // 第一层遍历，时间
+                for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+                    // 获取列车类型对象
+                    JSONObject dateElementObj = (JSONObject) entry.getValue();
+                    // 遍历每个时间的每个列车类型
+                    for (Map.Entry<String, Object> trainTypeEntry : dateElementObj.entrySet()) {
+                        JSONArray trainTypeArray = (JSONArray) trainTypeEntry.getValue();
+                        // 遍历每个车型的车次
+                        for (int i = 0; i < trainTypeArray.size(); i++) {
+                            JSONObject trainInfo = trainTypeArray.getJSONObject(i);
 
-                        resultMap.put(trainInfo.getString("station_train_code").replaceAll("[^0-9a-zA-Z]", ""), trainInfo.getString("train_no"));
+                            resultMap.put(trainInfo.getString("station_train_code").replaceAll("[^0-9a-zA-Z]", ""), trainInfo.getString("train_no"));
+                        }
                     }
                 }
+            } else {
+                logger.error("从12306获取到的火车站点信息为空");
             }
-        } else {
-            logger.error("从12306获取到的火车站点信息为空");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         return resultMap;
     }
 }
