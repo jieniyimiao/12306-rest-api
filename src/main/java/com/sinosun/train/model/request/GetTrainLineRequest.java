@@ -17,12 +17,6 @@ import java.util.Date;
  */
 @JSONType(naming = PropertyNamingStrategy.PascalCase)
 public class GetTrainLineRequest {
-
-    /**
-     * 列车号
-     */
-    private String trainNo;
-
     /**
      * 车次代码
      */
@@ -55,14 +49,6 @@ public class GetTrainLineRequest {
         if (new DateTime(fromDate).plusDays(1).minusSeconds(1).isBeforeNow()) {
             throw new ServiceException(BusinessErrorCode.REQUEST_PARAM_ERROR, "出发时间必须大于当前时间");
         }
-    }
-
-    public String getTrainNo() {
-        return trainNo;
-    }
-
-    public void setTrainNo(String trainNo) {
-        this.trainNo = trainNo;
     }
 
     public String getTrainCode() {
@@ -100,7 +86,6 @@ public class GetTrainLineRequest {
     @Override
     public String toString() {
         return "GetTrainLineRequest{" +
-                "trainNo='" + trainNo + '\'' +
                 "trainCode='" + trainCode + '\'' +
                 ", fromStationCode='" + fromStationCode + '\'' +
                 ", toStationCode='" + toStationCode + '\'' +

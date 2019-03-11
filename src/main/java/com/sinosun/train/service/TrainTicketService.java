@@ -6,9 +6,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.sinosun.train.datamap.SeatTypeMap;
 import com.sinosun.train.datamap.TrainCodeTrainNoMap;
-import com.sinosun.train.enums.BusinessErrorCode;
 import com.sinosun.train.enums.train.PassengerType;
-import com.sinosun.train.exception.ServiceException;
 import com.sinosun.train.model.request.GetTicketListRequest;
 import com.sinosun.train.model.request.GetTrainLineRequest;
 import com.sinosun.train.model.response.*;
@@ -18,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -34,6 +33,9 @@ import java.util.Map;
 @Service
 public class TrainTicketService {
     private static final Logger logger = LoggerFactory.getLogger(TrainTicketService.class);
+
+    @Autowired
+    private TrainStationService trainStationService;
 
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 
@@ -74,11 +76,8 @@ public class TrainTicketService {
         String trainNo = TrainCodeTrainNoMap.getTrainNo(requestBody.getTrainCode());
         // 在获取不到trainNo时，trainCode必须有值
         if (StringUtils.isEmpty(trainNo)) {
-            if (StringUtils.isEmpty(requestBody.getTrainNo())) {
-                throw new ServiceException(BusinessErrorCode.REQUEST_PARAM_MISS);
-            } else {
-                trainNo = requestBody.getTrainNo();
-            }
+            TrainCodeResult trainCodeResult = trainStationService.getAllTrainCode(null);
+            trainNo = (String) trainCodeResult.getResult().get(requestBody.getTrainCode());
         }
         String fromDate = convertFromDate(requestBody.getFromDate());
         return new TrainLineResult(getTrainLineFrom12306(trainNo, fromDate, requestBody.getFromStationCode(), requestBody.getToStationCode()));

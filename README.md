@@ -22,7 +22,7 @@
 | Result | 结果数据 | Object | Y | 不同的请求返回的不同结果。 |
 
 ## 3.火车票业务协议
-### 3.1获取所有/热点车站信息
+`### 3.1 获取所有/热点车站信息
 #### 方法名称
 - ```train/getAllCity```
 - ```train/getHotCity```
@@ -45,7 +45,7 @@ Station
 | pingYin | 车站拼音 | String | N |  |
 | PingYinShort | 车站简拼 | String | N |  |
 
-### 3.2关键字搜索车站
+### 3.2 关键字搜索车站
 #### 使用说明
 #### 方法名称
 - ```train/searchCity```
@@ -134,7 +134,6 @@ Ticket
 #### 请求参数
 | 节点 | 名称 | 类型 | 可为空 | 说明 |
 | :------:| :------:| :------: | :------: |:------: |
-| TrainNo | 列车号 | String | N | |
 | TrainCode | 车次代码 | String | N | |
 | FromStationCode | 出发站点代码 | String | N | |
 | ToStationCode | 到达站点代码 | String | N | |
@@ -160,3 +159,58 @@ Stop
 | StationNo | 站序（01开始） | String | N |  |
 | IsSearchStation | 是否是我们搜索的出行站和到达站 | String | N |  false不是 true是 |
 
+### 3.5 查询某个站点的途经列车时
+#### 使用说明
+#### 方法名称
+- ```train/getTrainStationTimeTable```
+#### 使用说明
+- 查询某个站点的途经列车时
+#### 请求参数
+| 节点 | 名称 | 类型 | 可为空 | 说明 |
+| :------:| :------:| :------: | :------: |:------: |
+| TrainStationName | 站点名称 | String | N | |
+| TrainStationCode | 站点代码 | String | N | |
+| TrainStartDate | 出发日期（格式：yyyy-mm-dd） | String | N | |
+#### 响应参数
+| 节点 | 名称 | 类型 | 可为空 | 说明 |
+| :------:| :------:| :------: | :------: |:------: |
+| startTrainDate | 发车时间（猜测意思） | | N | 例如：20190309|
+| trainNo | 列车号 | String | N | 例如：5l000D323501|
+| startStationTelecode | 始发站 站点代码 | String | N | 例如：NKH|
+| startStationName | 始发站 | String | N | 例如：南京南|
+| startStartTime | 始发站发车时间 | String | N | 例如：15:08|
+| endStationTelecode | 终到站 站点代码  | String | N | 例如：FYS |
+| endStationName | 终到站  | String | N | 例如：福州南 |
+| endArriveTime | 终到站到达时间  | String | N | 例如：22:26 |
+| trainTypeCode |   | String | N | 例如：2 |
+| trainTypeName |   | String | N |  例如：直通|
+| trainClassCode | 车次类型代码  | String | N | 例如：D |
+| trainClassName | 车次类型  | String | N | 例如：动车 |
+| seatTypes | 座位类型  | String | N | 例如：12582912 |
+| serviceType | 服务类型  | String | N | 例如：2 |
+| serviceTypeStr | 服务类型中文，对上一属性的解释（猜测）  | String | N | 例如：有空调 |
+| stationNo | 查询站点在次列车中的位置  | String | N | 例如：01 |
+| stationName | 查询站点名称  | String | N | 例如：南京南 |
+| stationTelecode | 查询站点代码  | String | N | 例如：NKH |
+| stationTrainCode | 途经车次号  | String | N | 例如：D3235 |
+| arriveDayDiff | 到达日差异天数（猜测）  | String | N | 例如：0 |
+| arriveTime | 到达查询站点时间  | String | N | 例如：16:27 |
+| startTime | 查询站点发车时间  | String | N | 例如：16:34 |
+| startDayDiff | 发车日差异天数（猜测）  | String | N | 例如：0 |
+| stopoverTime | 查询站点停靠时间  | String | N | 例如：7 |
+| runningTime | 到达查询站点时，列车运行时间  | String | N | 例如：52分 |
+
+### 3.6 获取所有 车次 - 列车号 对应关系表
+#### 方法名称
+- ```train/getTrainCode```
+#### 使用说明
+- ```train/getTrainCode```获取所有 车次 - 列车号 对应关系信息，拉取完信息存入redis，redis有效期为一天。
+#### 请求参数
+无
+#### 响应示例
+```json
+{
+    "C6628" : "76000C662801",
+    ......
+}
+```

@@ -1,14 +1,10 @@
 package com.sinosun.train.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sinosun.train.model.request.GetTicketListRequest;
-import com.sinosun.train.model.request.GetTrainLineRequest;
-import com.sinosun.train.model.request.NoneRequest;
-import com.sinosun.train.model.request.SearchCityRequest;
-import com.sinosun.train.model.response.StationResult;
-import com.sinosun.train.model.response.TicketListResult;
-import com.sinosun.train.model.response.TrainLineResult;
+import com.sinosun.train.model.request.*;
+import com.sinosun.train.model.response.*;
 import com.sinosun.train.service.TrainStationService;
+import com.sinosun.train.service.TrainStationTimeTableService;
 import com.sinosun.train.service.TrainTicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +36,8 @@ public class TrainController {
     private TrainStationService trainStationService;
     @Autowired
     private TrainTicketService trainTicketService;
+    @Autowired
+    private TrainStationTimeTableService trainStationTimeTableService;
 
     @RequestMapping(value = "getAllCity")
     @ResponseBody
@@ -51,6 +49,12 @@ public class TrainController {
     @ResponseBody
     public StationResult getHotCityHandler(HttpServletRequest request, @RequestBody JSONObject requestBody) {
         return trainStationService.getHotCity(requestBody.toJavaObject(NoneRequest.class));
+    }
+
+    @RequestMapping(value = "getTrainCode")
+    @ResponseBody
+    public TrainCodeResult getTrainCodeHandler(HttpServletRequest request, @RequestBody JSONObject requestBody) {
+        return trainStationService.getAllTrainCode(requestBody.toJavaObject(NoneRequest.class));
     }
 
     @RequestMapping(value = "searchCity")
@@ -71,4 +75,9 @@ public class TrainController {
         return trainTicketService.getTrainLine(requestBody.toJavaObject(GetTrainLineRequest.class));
     }
 
+    @RequestMapping(value = "getTrainStationTimeTable")
+    @ResponseBody
+    public TrainStationTimeTableResult getTrainStationTimeTable(HttpServletRequest request, @RequestBody JSONObject requestBody) {
+        return trainStationTimeTableService.getTrainStationTimeTable(requestBody.toJavaObject(GetTrainStationTimeTableRequest.class));
+    }
 }
