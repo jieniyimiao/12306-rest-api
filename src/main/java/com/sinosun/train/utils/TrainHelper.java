@@ -105,8 +105,8 @@ public class TrainHelper {
 
         try {
             // HttpUtil.request获得的结果在json对象序列化时存在unclosed.str异常
-            // String httpRes = HttpUtil.request(UrlConstant.TRAIN_ALL_CODE_LIST_URL, Connection.Method.GET, null);
-            String httpRes = cn.hutool.http.HttpUtil.get(UrlConstant.TRAIN_ALL_CODE_LIST_URL);
+            String httpRes = HttpUtil.request(UrlConstant.TRAIN_ALL_CODE_LIST_URL, Connection.Method.GET, null);
+            //String httpRes = cn.hutool.http.HttpUtil.get(UrlConstant.TRAIN_ALL_CODE_LIST_URL);
 
             // 返回例子：{ "2019-03-17": { "D": [ { "station_train_code": "D1(北京-沈阳南)", "train_no": "24000000D120" },.... ], .... } }
             if (StringUtils.isNotEmpty(httpRes) && httpRes.startsWith("var")) {

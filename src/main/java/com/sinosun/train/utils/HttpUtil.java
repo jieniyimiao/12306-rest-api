@@ -39,7 +39,9 @@ public class HttpUtil {
                     .header("Accept", "application/json")
                     .header("Connection", "close")
                     .followRedirects(true)
-                    .ignoreContentType(true);
+                    .ignoreContentType(true)
+                    .maxBodySize(100*1024*1024)
+                    .timeout(100);
 
             if (data != null) {
                 conn.requestBody(data.toJSONString());
